@@ -4,196 +4,270 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lal Bus — DU Bus Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #0a0a0a;
-      --border: #1f1f1f;
+      --bg: #121212;
+      --card: #1E1E1E;
+      --border: #2a2a2a;
       --text: #f0f0f0;
-      --muted: #999;
-      --red: #e53935;
-      --red-dim: #b71c1c;
-      --accent: #ff6b6b;
+      --muted: #9e9e9e;
+      --red: #CC0000;
+      --red2: #E53935;
+      --green: #22C55E;
+      --red-faint: rgba(204,0,0,0.1);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Mono', monospace;
-      font-weight: 300;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 1000; opacity: 0.4;
-    }
-    .container { max-width: 820px; margin: 0 auto; padding: 0 28px; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 400; overflow-x: hidden; line-height: 1.5; }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
 
     /* Nav */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 20px 0; border-bottom: 1px solid transparent;
+      padding: 16px 0; border-bottom: 1px solid transparent;
       transition: border-color 0.3s, background 0.3s;
     }
-    nav.scrolled { background: rgba(10,10,10,0.92); backdrop-filter: blur(12px); border-color: var(--border); }
+    nav.scrolled { background: rgba(18,18,18,0.95); backdrop-filter: blur(12px); border-color: var(--border); }
     nav .container { display: flex; justify-content: space-between; align-items: center; }
     .nav-logo {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: 1rem; color: var(--red); text-decoration: none;
-      display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 1.1rem;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
     }
-    .nav-dot { width: 10px; height: 10px; background: var(--red); border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .nav-links { display: flex; gap: 8px; list-style: none; }
     .nav-links a {
       color: var(--muted); text-decoration: none;
-      font-size: 0.72rem; letter-spacing: 0.1em;
-      text-transform: uppercase; transition: color 0.2s;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 6px 12px; border-radius: 8px;
+      transition: all 0.2s;
     }
-    .nav-links a:hover { color: var(--red); }
+    .nav-links a:hover { color: var(--text); background: var(--card); }
+    .nav-links .nav-gh {
+      color: var(--text); background: var(--card);
+      border: 1px solid var(--border);
+    }
+    .nav-links .nav-gh:hover { border-color: var(--red); }
 
     /* Hero */
     #hero {
-      min-height: 100vh; display: flex;
-      align-items: center; padding-top: 80px;
-      position: relative; overflow: hidden;
+      min-height: 100vh; display: flex; align-items: center;
+      padding-top: 80px; position: relative; overflow: hidden;
     }
-    .hero-bg-text {
-      position: absolute; right: -20px; top: 50%;
-      transform: translateY(-50%);
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: clamp(8rem, 20vw, 18rem);
-      color: transparent; -webkit-text-stroke: 1px #1a1a1a;
-      line-height: 1; pointer-events: none; user-select: none;
-      white-space: nowrap;
+    .hero-glow {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(204,0,0,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
     }
-    .hero-tag {
-      font-size: 0.68rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--red);
-      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-      opacity: 0; animation: fadeUp 0.6s 0.2s forwards;
+    .hero-inner { position: relative; width: 100%; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 0.75rem; font-weight: 500; color: var(--muted);
+      margin-bottom: 28px;
+      opacity: 0; animation: fadeUp 0.5s 0.1s forwards;
     }
-    .hero-tag::before { content:''; width:20px; height:1px; background:var(--red); }
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2.8rem, 9vw, 6rem);
-      font-weight: 800; line-height: 0.95;
-      letter-spacing: -0.03em; margin-bottom: 28px;
-      opacity: 0; animation: fadeUp 0.6s 0.35s forwards;
+    .hero-badge .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    .hero-title {
+      font-size: clamp(2.6rem, 8vw, 5rem); font-weight: 700;
+      line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.5s 0.2s forwards;
     }
-    h1 .red { color: var(--red); }
-    h1 .hollow { color: transparent; -webkit-text-stroke: 1px var(--text); }
+    .hero-title .red { color: var(--red2); }
+    .hero-title .bn { font-size: 0.85em; opacity: 0.7; }
+
     .hero-desc {
-      max-width: 500px; line-height: 1.75;
-      color: var(--muted); font-size: 0.88rem; margin-bottom: 44px;
-      opacity: 0; animation: fadeUp 0.6s 0.5s forwards;
+      max-width: 520px; font-size: 1rem; color: var(--muted);
+      line-height: 1.7; margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.5s 0.3s forwards;
     }
-    .hero-desc strong { color: var(--text); font-weight: 400; }
-    .hero-cta {
-      display: flex; gap: 14px; flex-wrap: wrap;
-      opacity: 0; animation: fadeUp 0.6s 0.65s forwards;
+    .hero-desc strong { color: var(--text); font-weight: 600; }
+
+    .hero-actions {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.5s 0.4s forwards;
     }
     .btn {
-      padding: 13px 30px; font-family: 'DM Mono', monospace;
-      font-size: 0.72rem; letter-spacing: 0.1em;
-      text-transform: uppercase; text-decoration: none;
-      border: 1px solid; transition: all 0.2s; display: inline-block;
+      padding: 12px 24px; font-family: 'Inter', sans-serif;
+      font-size: 0.875rem; font-weight: 600;
+      text-decoration: none; border-radius: 10px;
+      border: 1px solid transparent; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
-    .btn-red:hover { background: var(--red-dim); border-color: var(--red-dim); }
-    .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
-    .btn-ghost:hover { border-color: var(--text); }
+    .btn-red {
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      color: #fff;
+    }
+    .btn-red:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-outline {
+      background: var(--card); color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-outline:hover { border-color: var(--muted); }
+
+    /* App mockup card */
+    .hero-mockup {
+      margin-top: 60px;
+      opacity: 0; animation: fadeUp 0.6s 0.5s forwards;
+    }
+    .app-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+    }
+    .app-card-header {
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      padding: 20px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .app-card-header-left { }
+    .app-card-subtitle { font-size: 0.72rem; color: rgba(255,255,255,0.65); margin-bottom: 4px; }
+    .app-card-title { font-size: 1.3rem; font-weight: 700; color: #fff; }
+    .app-card-tagline { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
+    .app-badge {
+      background: rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 5px 12px; font-size: 0.72rem; color: #fff;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .app-badge .active-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+    .app-card-body { padding: 20px 24px; }
+    .app-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .app-grid-item {
+      background: #252525; border-radius: 14px; padding: 14px 10px;
+      text-align: center; display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+    }
+    .app-grid-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--red-faint); display: flex;
+      align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .app-grid-label { font-size: 0.68rem; font-weight: 500; color: var(--muted); }
+    .app-activity { }
+    .app-activity-title { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; font-weight: 500; }
+    .app-activity-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .app-activity-row:last-child { border-bottom: none; }
+    .active-dot-sm { width: 7px; height: 7px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
+    .app-activity-name { font-size: 0.82rem; font-weight: 500; flex: 1; }
+    .app-activity-bn { font-size: 0.7rem; color: var(--muted); }
+    .app-activity-time { font-size: 0.72rem; color: var(--muted); }
 
     /* Sections */
-    section { padding: 100px 0; border-top: 1px solid var(--border); }
-    .section-label {
-      font-size: 0.62rem; letter-spacing: 0.25em;
-      text-transform: uppercase; color: var(--red);
-      margin-bottom: 48px; display: flex; align-items: center; gap: 12px;
+    section { padding: 96px 0; border-top: 1px solid var(--border); }
+    .section-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--red2);
+      margin-bottom: 12px;
     }
-    .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .section-desc { color: var(--muted); font-size: 0.95rem; max-width: 540px; line-height: 1.7; margin-bottom: 48px; }
 
     /* Features */
-    .features-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-      background: var(--border);
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; transition: border-color 0.2s, transform 0.2s;
     }
-    .feature {
-      background: var(--bg); padding: 32px 28px;
-      transition: background 0.2s;
+    .feature-card:hover { border-color: rgba(204,0,0,0.4); transform: translateY(-2px); }
+    .feature-icon-wrap {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--red-faint); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.2rem; margin-bottom: 16px;
     }
-    .feature:hover { background: #111; }
-    .feature-icon { font-size: 1.4rem; margin-bottom: 16px; }
-    .feature-name {
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: 0.95rem; margin-bottom: 10px; color: var(--text);
+    .feature-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
+    .feature-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    /* Screens */
+    .screens-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .screen-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 16px; text-align: center;
+      transition: border-color 0.2s;
     }
-    .feature-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+    .screen-card:hover { border-color: rgba(204,0,0,0.4); }
+    .screen-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .screen-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+    .screen-desc { font-size: 0.72rem; color: var(--muted); }
 
     /* Routes */
-    .routes-intro { color: var(--muted); font-size: 0.85rem; line-height: 1.7; margin-bottom: 36px; }
-    .routes-intro strong { color: var(--text); font-weight: 400; }
-    .routes-wrap {
-      display: flex; flex-wrap: wrap; gap: 10px;
-    }
-    .route-tag {
-      font-size: 0.7rem; letter-spacing: 0.08em;
-      padding: 8px 16px; border: 1px solid var(--border);
+    .routes-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+    .route-chip {
+      font-size: 0.78rem; font-weight: 500;
+      padding: 7px 16px; border-radius: 20px;
+      background: var(--card); border: 1px solid var(--border);
       color: var(--muted); transition: all 0.2s;
     }
-    .route-tag:hover { border-color: var(--red); color: var(--text); }
+    .route-chip:hover { border-color: var(--red2); color: var(--text); }
 
     /* Tech */
-    .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .tech-item {
-      padding: 24px; border: 1px solid var(--border);
+    .tech-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+    .tech-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 24px;
       display: flex; align-items: center; gap: 16px;
       transition: border-color 0.2s;
     }
-    .tech-item:hover { border-color: var(--red); }
-    .tech-icon { font-size: 1.2rem; min-width: 32px; text-align: center; }
-    .tech-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
-    .tech-desc { font-size: 0.72rem; color: var(--muted); }
+    .tech-card:hover { border-color: rgba(204,0,0,0.4); }
+    .tech-icon { font-size: 1.4rem; min-width: 36px; text-align: center; }
+    .tech-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 3px; }
+    .tech-desc { font-size: 0.75rem; color: var(--muted); }
 
-    /* CTA bottom */
-    .cta-block {
-      text-align: center; padding: 80px 0;
-      border-top: 1px solid var(--border);
+    /* CTA */
+    .cta-section {
+      padding: 80px 0; border-top: 1px solid var(--border);
+      text-align: center;
     }
-    .cta-block h2 {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: clamp(2rem, 6vw, 4rem);
-      letter-spacing: -0.03em; margin-bottom: 20px;
+    .cta-inner {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 24px; padding: 60px 40px;
+      position: relative; overflow: hidden;
     }
-    .cta-block h2 span { color: var(--red); }
-    .cta-block p { color: var(--muted); font-size: 0.85rem; margin-bottom: 36px; }
-    .cta-links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .cta-inner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top, rgba(204,0,0,0.08), transparent 60%);
+      pointer-events: none;
+    }
+    .cta-title { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .cta-title span { color: var(--red2); }
+    .cta-desc { color: var(--muted); font-size: 0.95rem; margin-bottom: 36px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
     /* Footer */
     footer { border-top: 1px solid var(--border); padding: 28px 0; }
-    footer .container { display: flex; justify-content: space-between; align-items: center; }
-    .footer-copy { font-size: 0.68rem; color: #333; }
+    footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.75rem; color: #444; }
     .footer-copy span { color: var(--muted); }
-    .footer-back {
-      font-size: 0.68rem; color: var(--muted);
-      text-decoration: none; letter-spacing: 0.08em;
-      transition: color 0.2s;
-    }
-    .footer-back:hover { color: var(--red); }
+    .footer-back { font-size: 0.75rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-back:hover { color: var(--red2); }
 
-    /* Animations */
-    @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
-    .reveal { opacity:0; transform:translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+    .reveal { opacity:0; transform:translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .reveal.visible { opacity:1; transform:translateY(0); }
 
-    @media(max-width:640px){
+    @media(max-width:680px){
       .features-grid { grid-template-columns:1fr; }
       .tech-grid { grid-template-columns:1fr; }
-      h1 { font-size: 2.8rem; }
-      .hero-bg-text { display:none; }
+      .screens-grid { grid-template-columns: repeat(2,1fr); }
+      .app-grid { grid-template-columns: repeat(2,1fr); }
+      .nav-links { display:none; }
     }
   </style>
 </head>
@@ -202,152 +276,204 @@
 <nav id="nav">
   <div class="container">
     <a class="nav-logo" href="#">
-      <span class="nav-dot"></span>
+      <div class="nav-logo-icon">🚌</div>
       Lal Bus
     </a>
     <ul class="nav-links">
       <li><a href="#features">Features</a></li>
+      <li><a href="#screens">Screens</a></li>
       <li><a href="#routes">Routes</a></li>
       <li><a href="#tech">Tech</a></li>
-      <li><a href="https://github.com/MasadMoral/lal-bus" target="_blank">GitHub</a></li>
+      <li><a href="https://github.com/MasadMoral/rtx_lalbus" target="_blank" class="nav-gh">GitHub ↗</a></li>
     </ul>
   </div>
 </nav>
 
-<section id="hero">
-  <div class="hero-bg-text">BUS</div>
-  <div class="container" style="position:relative; width:100%;">
-    <div class="hero-tag">Dhaka University · Real-time</div>
-    <h1>
-      <span class="red">লাল</span> <span class="hollow">বাস</span><br>
-      Track it.<br>Live.
-    </h1>
-    <p class="hero-desc">
-      A <strong>crowd-sourced bus tracking app</strong> for Dhaka University students.
-      See where your bus is right now — no guessing, no waiting in the dark.
-    </p>
-    <div class="hero-cta">
-      <a href="https://github.com/MasadMoral/lal-bus" target="_blank" class="btn btn-red">View on GitHub</a>
-      <a href="#features" class="btn btn-ghost">Explore Features</a>
+<section id="hero" style="border:none;">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Dhaka University · Real-time bus tracking
+      </div>
+      <h1 class="hero-title">
+        <span class="red">লাল বাস</span><br>
+        Never miss<br>your bus again.
+      </h1>
+      <p class="hero-desc">
+        A <strong>real-time bus tracking app</strong> for Dhaka University students.
+        See live bus locations, check schedules, and get notified — all in one place.
+      </p>
+      <div class="hero-actions">
+        <a href="https://github.com/MasadMoral/rtx_lalbus" target="_blank" class="btn btn-red">
+          View on GitHub ↗
+        </a>
+        <a href="#features" class="btn btn-outline">Explore Features</a>
+      </div>
+
+      <!-- App UI mockup -->
+      <div class="hero-mockup">
+        <div class="app-card">
+          <div class="app-card-header">
+            <div class="app-card-header-left">
+              <div class="app-card-subtitle">Dhaka University</div>
+              <div class="app-card-title">Lal Bus</div>
+              <div class="app-card-tagline">Real-time bus tracking</div>
+            </div>
+            <div class="app-badge">
+              <span class="active-dot"></span>
+              3 active buses
+            </div>
+          </div>
+          <div class="app-card-body">
+            <div class="app-grid">
+              <div class="app-grid-item"><div class="app-grid-icon">🗺️</div><div class="app-grid-label">Live map</div></div>
+              <div class="app-grid-item"><div class="app-grid-icon">🕐</div><div class="app-grid-label">Schedule</div></div>
+              <div class="app-grid-item"><div class="app-grid-icon">📢</div><div class="app-grid-label">Notices</div></div>
+              <div class="app-grid-item"><div class="app-grid-icon">📍</div><div class="app-grid-label">Stops</div></div>
+            </div>
+            <div class="app-activity">
+              <div class="app-activity-title">Recent activity</div>
+              <div class="app-activity-row">
+                <span class="active-dot-sm"></span>
+                <div style="flex:1"><div class="app-activity-name">Kinchit</div><div class="app-activity-bn">কিঞ্চিত</div></div>
+                <div class="app-activity-time">2 users · just now</div>
+              </div>
+              <div class="app-activity-row">
+                <span class="active-dot-sm"></span>
+                <div style="flex:1"><div class="app-activity-name">Taranga</div><div class="app-activity-bn">তরঙ্গ</div></div>
+                <div class="app-activity-time">1 user · 4 min ago</div>
+              </div>
+              <div class="app-activity-row">
+                <span class="active-dot-sm"></span>
+                <div style="flex:1"><div class="app-activity-name">Shrabon</div><div class="app-activity-bn">শ্রাবণ</div></div>
+                <div class="app-activity-time">3 users · 9 min ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="features">
   <div class="container">
-    <div class="section-label">Features</div>
+    <div class="section-eyebrow">Features</div>
+    <h2 class="section-title">Everything you need</h2>
+    <p class="section-desc">Built for DU students, by a DU student. Simple, fast, and useful.</p>
     <div class="features-grid reveal">
-      <div class="feature">
-        <div class="feature-icon">🗺️</div>
-        <div class="feature-name">Live Tracking</div>
-        <div class="feature-desc">Crowd-sourced GPS. Riders share location, others see the bus on the map in real time.</div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">🗺️</div>
+        <div class="feature-name">Live GPS Tracking</div>
+        <div class="feature-desc">See where buses are right now on a live map. Location data shared by riders on the bus.</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🕐</div>
-        <div class="feature-name">Schedule</div>
-        <div class="feature-desc">Full timetable for all 17 DU bus routes with stop-wise arrival times.</div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">👨‍✈️</div>
+        <div class="feature-name">Driver Mode</div>
+        <div class="feature-desc">A simplified interface for drivers with distraction-free access to maps and schedules.</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">📍</div>
-        <div class="feature-name">Stop Map</div>
-        <div class="feature-desc">Interactive map showing all stops for any route — know exactly where to wait.</div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">🕐</div>
+        <div class="feature-name">Full Schedule</div>
+        <div class="feature-desc">Complete timetables for all 17+ DU bus routes with stop-wise arrival estimates.</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">📢</div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">📍</div>
+        <div class="feature-name">Stop Maps</div>
+        <div class="feature-desc">Interactive maps showing every stop for every route. Know exactly where to wait.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">📢</div>
         <div class="feature-name">Notices</div>
-        <div class="feature-desc">General and bus-specific notices with role-based admin posting.</div>
+        <div class="feature-desc">General and bus-specific announcements. Admins can post, students stay informed.</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">❤️</div>
-        <div class="feature-name">Favorites</div>
-        <div class="feature-desc">Save your buses, get relevant notices first. Personalized for your route.</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔐</div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap">🔐</div>
         <div class="feature-name">DU Auth</div>
-        <div class="feature-desc">Login with your @du.ac.bd email via Google, or use email/password.</div>
+        <div class="feature-desc">Login with your @du.ac.bd Google account or traditional email/password.</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="container">
+    <div class="section-eyebrow">Screens</div>
+    <h2 class="section-title">What's inside the app</h2>
+    <p class="section-desc">Each screen is focused on one job — no bloat.</p>
+    <div class="screens-grid reveal">
+      <div class="screen-card"><div class="screen-icon">🏠</div><div class="screen-name">Home</div><div class="screen-desc">Active buses & quick actions</div></div>
+      <div class="screen-card"><div class="screen-icon">🗺️</div><div class="screen-name">Live Map</div><div class="screen-desc">Real-time bus positions</div></div>
+      <div class="screen-card"><div class="screen-icon">📅</div><div class="screen-name">Schedule</div><div class="screen-desc">Timetables for all routes</div></div>
+      <div class="screen-card"><div class="screen-icon">📍</div><div class="screen-name">Stops</div><div class="screen-desc">Stop map per route</div></div>
+      <div class="screen-card"><div class="screen-icon">📢</div><div class="screen-name">Notices</div><div class="screen-desc">Admin announcements</div></div>
+      <div class="screen-card"><div class="screen-icon">⚙️</div><div class="screen-name">Settings</div><div class="screen-desc">Account & preferences</div></div>
+      <div class="screen-card"><div class="screen-icon">🔑</div><div class="screen-name">Login</div><div class="screen-desc">DU email or password</div></div>
+      <div class="screen-card"><div class="screen-icon">🛠️</div><div class="screen-name">Admin</div><div class="screen-desc">Post & manage notices</div></div>
     </div>
   </div>
 </section>
 
 <section id="routes">
   <div class="container">
-    <div class="section-label">Routes</div>
-    <p class="routes-intro reveal">Covering <strong>17 Dhaka University bus routes</strong> — from Kinchit to Shitalakhya.</p>
+    <div class="section-eyebrow">Routes</div>
+    <h2 class="section-title">17+ DU bus routes</h2>
+    <p class="section-desc">From Kinchit to Shitalakhya — all routes covered.</p>
     <div class="routes-wrap reveal">
-      <span class="route-tag">Kinchit</span>
-      <span class="route-tag">Choitaly</span>
-      <span class="route-tag">Shrabon</span>
-      <span class="route-tag">Taranga</span>
-      <span class="route-tag">Basanta</span>
-      <span class="route-tag">Boishakhi</span>
-      <span class="route-tag">Khonika</span>
-      <span class="route-tag">Hemonto</span>
-      <span class="route-tag">Ullash</span>
-      <span class="route-tag">Falguni</span>
-      <span class="route-tag">Isha Kha</span>
-      <span class="route-tag">Maitree</span>
-      <span class="route-tag">Wari-Bateshwar</span>
-      <span class="route-tag">Idrakpur</span>
-      <span class="route-tag">Bikrampur</span>
-      <span class="route-tag">Ananda</span>
-      <span class="route-tag">Shitalakhya</span>
+      <span class="route-chip">Kinchit</span>
+      <span class="route-chip">Choitaly</span>
+      <span class="route-chip">Shrabon</span>
+      <span class="route-chip">Taranga</span>
+      <span class="route-chip">Basanta</span>
+      <span class="route-chip">Boishakhi</span>
+      <span class="route-chip">Khonika</span>
+      <span class="route-chip">Hemonto</span>
+      <span class="route-chip">Ullash</span>
+      <span class="route-chip">Falguni</span>
+      <span class="route-chip">Isha Kha</span>
+      <span class="route-chip">Maitree</span>
+      <span class="route-chip">Wari-Bateshwar</span>
+      <span class="route-chip">Idrakpur</span>
+      <span class="route-chip">Bikrampur</span>
+      <span class="route-chip">Ananda</span>
+      <span class="route-chip">Shitalakhya</span>
     </div>
   </div>
 </section>
 
 <section id="tech">
   <div class="container">
-    <div class="section-label">Tech Stack</div>
+    <div class="section-eyebrow">Tech Stack</div>
+    <h2 class="section-title">Built with</h2>
+    <p class="section-desc">Lightweight, fast, and open source.</p>
     <div class="tech-grid reveal">
-      <div class="tech-item">
-        <div class="tech-icon">🐦</div>
-        <div>
-          <div class="tech-name">Flutter</div>
-          <div class="tech-desc">Cross-platform Android app built in Dart</div>
-        </div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-icon">🔥</div>
-        <div>
-          <div class="tech-name">Firebase</div>
-          <div class="tech-desc">Auth, Firestore, Realtime Database</div>
-        </div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-icon">🗺️</div>
-        <div>
-          <div class="tech-name">OpenStreetMap</div>
-          <div class="tech-desc">Maps via flutter_map — no Google Maps cost</div>
-        </div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-icon">📡</div>
-        <div>
-          <div class="tech-name">Geolocator</div>
-          <div class="tech-desc">Real-time GPS sharing from riders</div>
-        </div>
-      </div>
+      <div class="tech-card"><div class="tech-icon">🐦</div><div><div class="tech-name">Flutter ^3.13</div><div class="tech-desc">Android app built in Dart</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🔥</div><div><div class="tech-name">Firebase</div><div class="tech-desc">Firestore + Realtime Database + Auth</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🗺️</div><div><div class="tech-name">OpenStreetMap</div><div class="tech-desc">flutter_map — open source, no cost</div></div></div>
+      <div class="tech-card"><div class="tech-icon">📡</div><div><div class="tech-name">Geolocator</div><div class="tech-desc">GPS with 15m distance filtering</div></div></div>
     </div>
   </div>
 </section>
 
-<div class="cta-block">
+<div class="cta-section">
   <div class="container">
-    <h2>Built for <span>DU</span> students.</h2>
-    <p>Open source. Free to use, modify, and contribute.</p>
-    <div class="cta-links">
-      <a href="https://github.com/MasadMoral/lal-bus" target="_blank" class="btn btn-red">GitHub Repository</a>
-      <a href="https://github.com/MasadMoral/lal-bus/releases" target="_blank" class="btn btn-ghost">Releases</a>
+    <div class="cta-inner">
+      <h2 class="cta-title">Built for <span>DU</span> students.</h2>
+      <p class="cta-desc">Open source. MIT licensed. Free to use and modify.</p>
+      <div class="cta-btns">
+        <a href="https://github.com/MasadMoral/rtx_lalbus" target="_blank" class="btn btn-red">GitHub Repository ↗</a>
+        <a href="https://github.com/MasadMoral/rtx_lalbus/releases" target="_blank" class="btn btn-outline">Releases</a>
+      </div>
     </div>
   </div>
 </div>
 
 <footer>
   <div class="container">
-    <div class="footer-copy">© 2026 <span>Masad Moral</span> — MIT License</div>
-    <a href="https://masad.ami.bd" class="footer-back">← masad.ami.bd</a>
+    <div class="footer-copy">© 2026 <span>Lal Bus</span> — MIT License</div>
+    <div class="footer-copy"><span>lalbus.pro.bd</span></div>
   </div>
 </footer>
 
@@ -355,10 +481,10 @@
   window.addEventListener('scroll', () => {
     document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
   });
-  const observer = new IntersectionObserver(entries => {
+  const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
 </script>
 </body>
 </html>
