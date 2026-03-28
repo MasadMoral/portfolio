@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lal Bus — DU Bus Tracker</title>
+  <title>Masad Moral</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --bg: #121212;
       --card: #1E1E1E;
+      --card2: #252525;
       --border: #2a2a2a;
       --text: #f0f0f0;
       --muted: #9e9e9e;
-      --red: #CC0000;
-      --red2: #E53935;
+      --blue: #2979FF;
+      --blue2: #1565C0;
+      --blue-faint: rgba(41,121,255,0.1);
       --green: #22C55E;
-      --red-faint: rgba(204,0,0,0.1);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -32,29 +33,26 @@
     nav.scrolled { background: rgba(18,18,18,0.95); backdrop-filter: blur(12px); border-color: var(--border); }
     nav .container { display: flex; justify-content: space-between; align-items: center; }
     .nav-logo {
-      font-weight: 700; font-size: 1.1rem;
-      color: var(--text); text-decoration: none;
-      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 1rem; color: var(--text);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
     }
     .nav-logo-icon {
       width: 32px; height: 32px; border-radius: 8px;
-      background: linear-gradient(135deg, var(--red), var(--red2));
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
       display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
+      font-size: 0.85rem; font-weight: 700; color: white;
     }
     .nav-links { display: flex; gap: 8px; list-style: none; }
     .nav-links a {
-      color: var(--muted); text-decoration: none;
-      font-size: 0.82rem; font-weight: 500;
-      padding: 6px 12px; border-radius: 8px;
-      transition: all 0.2s;
+      color: var(--muted); text-decoration: none; font-size: 0.82rem;
+      font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: all 0.2s;
     }
     .nav-links a:hover { color: var(--text); background: var(--card); }
-    .nav-links .nav-gh {
-      color: var(--text); background: var(--card);
-      border: 1px solid var(--border);
+    .nav-links .nav-cta {
+      color: var(--blue); background: var(--blue-faint);
+      border: 1px solid rgba(41,121,255,0.25);
     }
-    .nav-links .nav-gh:hover { border-color: var(--red); }
+    .nav-links .nav-cta:hover { background: rgba(41,121,255,0.18); }
 
     /* Hero */
     #hero {
@@ -62,8 +60,8 @@
       padding-top: 80px; position: relative; overflow: hidden;
     }
     .hero-glow {
-      position: absolute; width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(204,0,0,0.12) 0%, transparent 70%);
+      position: absolute; width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(41,121,255,0.1) 0%, transparent 70%);
       top: 50%; left: 50%; transform: translate(-50%, -50%);
       pointer-events: none;
     }
@@ -80,12 +78,12 @@
     @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
     .hero-title {
-      font-size: clamp(2.6rem, 8vw, 5rem); font-weight: 700;
-      line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px;
+      font-size: clamp(2.8rem, 9vw, 5.5rem); font-weight: 700;
+      line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 24px;
       opacity: 0; animation: fadeUp 0.5s 0.2s forwards;
     }
-    .hero-title .red { color: var(--red2); }
-    .hero-title .bn { font-size: 0.85em; opacity: 0.7; }
+    .hero-title .blue { color: var(--blue); }
+    .hero-title .hollow { color: transparent; -webkit-text-stroke: 1px var(--text); }
 
     .hero-desc {
       max-width: 520px; font-size: 1rem; color: var(--muted);
@@ -105,148 +103,114 @@
       border: 1px solid transparent; transition: all 0.2s;
       display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-red {
-      background: linear-gradient(135deg, var(--red), var(--red2));
-      color: #fff;
-    }
-    .btn-red:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn-outline {
-      background: var(--card); color: var(--text);
-      border-color: var(--border);
-    }
+    .btn-blue { background: linear-gradient(135deg, var(--blue), var(--blue2)); color: #fff; }
+    .btn-blue:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-outline { background: var(--card); color: var(--text); border-color: var(--border); }
     .btn-outline:hover { border-color: var(--muted); }
 
-    /* App mockup card */
-    .hero-mockup {
-      margin-top: 60px;
-      opacity: 0; animation: fadeUp 0.6s 0.5s forwards;
+    /* Stats row */
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 56px;
+      opacity: 0; animation: fadeUp 0.5s 0.55s forwards;
     }
-    .app-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden;
-    }
-    .app-card-header {
-      background: linear-gradient(135deg, var(--red), var(--red2));
-      padding: 20px 24px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .app-card-header-left { }
-    .app-card-subtitle { font-size: 0.72rem; color: rgba(255,255,255,0.65); margin-bottom: 4px; }
-    .app-card-title { font-size: 1.3rem; font-weight: 700; color: #fff; }
-    .app-card-tagline { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
-    .app-badge {
-      background: rgba(255,255,255,0.15); border-radius: 20px;
-      padding: 5px 12px; font-size: 0.72rem; color: #fff;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .app-badge .active-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
-    .app-card-body { padding: 20px 24px; }
-    .app-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
-    .app-grid-item {
-      background: #252525; border-radius: 14px; padding: 14px 10px;
-      text-align: center; display: flex; flex-direction: column;
-      align-items: center; gap: 8px;
-    }
-    .app-grid-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: var(--red-faint); display: flex;
-      align-items: center; justify-content: center; font-size: 1rem;
-    }
-    .app-grid-label { font-size: 0.68rem; font-weight: 500; color: var(--muted); }
-    .app-activity { }
-    .app-activity-title { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; font-weight: 500; }
-    .app-activity-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 0; border-bottom: 1px solid var(--border);
-    }
-    .app-activity-row:last-child { border-bottom: none; }
-    .active-dot-sm { width: 7px; height: 7px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
-    .app-activity-name { font-size: 0.82rem; font-weight: 500; flex: 1; }
-    .app-activity-bn { font-size: 0.7rem; color: var(--muted); }
-    .app-activity-time { font-size: 0.72rem; color: var(--muted); }
+    .stat-item { }
+    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 4px; }
+    .stat-num span { color: var(--blue); }
+    .stat-label { font-size: 0.75rem; color: var(--muted); }
 
     /* Sections */
     section { padding: 96px 0; border-top: 1px solid var(--border); }
     .section-eyebrow {
       font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--red2);
-      margin-bottom: 12px;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 12px;
     }
     .section-title {
       font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700;
-      letter-spacing: -0.02em; margin-bottom: 16px;
+      letter-spacing: -0.02em; margin-bottom: 14px;
     }
     .section-desc { color: var(--muted); font-size: 0.95rem; max-width: 540px; line-height: 1.7; margin-bottom: 48px; }
 
-    /* Features */
-    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-    .feature-card {
+    /* About */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .about-text { color: var(--muted); font-size: 0.9rem; line-height: 1.8; }
+    .about-text p + p { margin-top: 14px; }
+    .about-text strong { color: var(--text); font-weight: 600; }
+    .about-facts { display: flex; flex-direction: column; gap: 12px; }
+    .fact {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 24px; transition: border-color 0.2s, transform 0.2s;
-    }
-    .feature-card:hover { border-color: rgba(204,0,0,0.4); transform: translateY(-2px); }
-    .feature-icon-wrap {
-      width: 44px; height: 44px; border-radius: 12px;
-      background: var(--red-faint); display: flex;
-      align-items: center; justify-content: center;
-      font-size: 1.2rem; margin-bottom: 16px;
-    }
-    .feature-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
-    .feature-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
-
-    /* Screens */
-    .screens-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
-    .screen-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 20px 16px; text-align: center;
+      border-radius: 12px; padding: 16px 20px;
       transition: border-color 0.2s;
     }
-    .screen-card:hover { border-color: rgba(204,0,0,0.4); }
-    .screen-icon { font-size: 1.8rem; margin-bottom: 12px; }
-    .screen-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
-    .screen-desc { font-size: 0.72rem; color: var(--muted); }
+    .fact:hover { border-color: rgba(41,121,255,0.4); }
+    .fact-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin-bottom: 4px; }
+    .fact-value { font-size: 0.88rem; color: var(--text); font-weight: 500; }
 
-    /* Routes */
-    .routes-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-    .route-chip {
-      font-size: 0.78rem; font-weight: 500;
-      padding: 7px 16px; border-radius: 20px;
+    /* Skills */
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 10px; }
+    .skill-chip {
+      font-size: 0.8rem; font-weight: 500;
+      padding: 8px 16px; border-radius: 20px;
       background: var(--card); border: 1px solid var(--border);
       color: var(--muted); transition: all 0.2s;
     }
-    .route-chip:hover { border-color: var(--red2); color: var(--text); }
+    .skill-chip:hover { border-color: var(--blue); color: var(--text); }
+    .skill-chip.strong { border-color: rgba(41,121,255,0.35); color: var(--blue); }
 
-    /* Tech */
-    .tech-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
-    .tech-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 20px 24px;
-      display: flex; align-items: center; gap: 16px;
-      transition: border-color 0.2s;
+    /* Projects */
+    .projects-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: 16px; overflow: hidden; }
+    .project-item {
+      background: var(--card); padding: 28px 32px;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 24px;
+      text-decoration: none; color: inherit;
+      transition: background 0.2s;
     }
-    .tech-card:hover { border-color: rgba(204,0,0,0.4); }
-    .tech-icon { font-size: 1.4rem; min-width: 36px; text-align: center; }
-    .tech-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 3px; }
-    .tech-desc { font-size: 0.75rem; color: var(--muted); }
+    .project-item:hover { background: var(--card2); }
+    .project-num { font-size: 0.68rem; font-weight: 600; color: var(--blue); letter-spacing: 0.1em; margin-bottom: 6px; }
+    .project-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; transition: color 0.2s; }
+    .project-item:hover .project-name { color: var(--blue); }
+    .project-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+    .project-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .tag {
+      font-size: 0.68rem; font-weight: 500; letter-spacing: 0.06em;
+      padding: 4px 10px; border-radius: 6px;
+      background: var(--card2); border: 1px solid var(--border); color: var(--muted);
+    }
+    .tag.lang { border-color: rgba(41,121,255,0.3); color: var(--blue); }
+
+    /* Contact */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .contact-heading { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 20px; }
+    .contact-heading span { color: var(--blue); }
+    .contact-sub { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 28px; }
+    .contact-links { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+    .contact-link {
+      display: flex; align-items: center; gap: 16px;
+      text-decoration: none; color: var(--muted); font-size: 0.85rem;
+      padding: 16px 20px; background: var(--card);
+      border: 1px solid var(--border); border-radius: 12px;
+      transition: all 0.2s;
+    }
+    .contact-link:hover { color: var(--text); border-color: rgba(41,121,255,0.4); padding-left: 26px; }
+    .contact-link-icon {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--blue); min-width: 64px;
+    }
 
     /* CTA */
-    .cta-section {
-      padding: 80px 0; border-top: 1px solid var(--border);
-      text-align: center;
-    }
+    .cta-section { padding: 80px 0; border-top: 1px solid var(--border); }
     .cta-inner {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 24px; padding: 60px 40px;
+      border-radius: 24px; padding: 60px 40px; text-align: center;
       position: relative; overflow: hidden;
     }
     .cta-inner::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at top, rgba(204,0,0,0.08), transparent 60%);
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top, rgba(41,121,255,0.07), transparent 60%);
       pointer-events: none;
     }
     .cta-title { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; }
-    .cta-title span { color: var(--red2); }
+    .cta-title span { color: var(--blue); }
     .cta-desc { color: var(--muted); font-size: 0.95rem; margin-bottom: 36px; }
     .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
@@ -255,18 +219,16 @@
     footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
     .footer-copy { font-size: 0.75rem; color: #444; }
     .footer-copy span { color: var(--muted); }
-    .footer-back { font-size: 0.75rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-    .footer-back:hover { color: var(--red2); }
 
     @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
-    .reveal { opacity:0; transform:translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
-    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal {  }
+    .reveal.visible {  }
 
-    @media(max-width:680px){
-      .features-grid { grid-template-columns:1fr; }
-      .tech-grid { grid-template-columns:1fr; }
-      .screens-grid { grid-template-columns: repeat(2,1fr); }
-      .app-grid { grid-template-columns: repeat(2,1fr); }
+    @media(max-width:640px){
+      .about-grid, .contact-grid { grid-template-columns:1fr; }
+      .project-item { grid-template-columns:1fr; }
+      .project-tags { display:none; }
+      .hero-stats { gap: 20px; }
       .nav-links { display:none; }
     }
   </style>
@@ -276,15 +238,13 @@
 <nav id="nav">
   <div class="container">
     <a class="nav-logo" href="#">
-      <div class="nav-logo-icon">🚌</div>
-      Lal Bus
+      <div class="nav-logo-icon">MM</div>
+      Masad Moral
     </a>
     <ul class="nav-links">
-      <li><a href="#features">Features</a></li>
-      <li><a href="#screens">Screens</a></li>
-      <li><a href="#routes">Routes</a></li>
-      <li><a href="#tech">Tech</a></li>
-      <li><a href="https://github.com/MasadMoral/lal-bus" target="_blank" class="nav-gh">GitHub ↗</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -295,196 +255,205 @@
     <div class="hero-inner">
       <div class="hero-badge">
         <span class="dot"></span>
-        Dhaka University · Real-time bus tracking
+        Open to collaboration
       </div>
       <h1 class="hero-title">
-        <span class="red">লাল বাস</span><br>
-        Never miss<br>your bus again.
+        <span class="blue">Masad</span><br>
+        <span class="hollow">Moral</span><span style="color:var(--blue)">.</span>
       </h1>
       <p class="hero-desc">
-        A <strong>real-time bus tracking app</strong> for Dhaka University students.
-        See live bus locations, check schedules, and get notified — all in one place.
+        Builder. BBA student at <strong>Dhaka University</strong>.<br>
+        I build automation systems, AI agents, and Android apps — and run a poultry farm on the side.
       </p>
       <div class="hero-actions">
-        <a href="https://github.com/MasadMoral/lal-bus" target="_blank" class="btn btn-red">
-          View on GitHub ↗
-        </a>
-        <a href="#features" class="btn btn-outline">Explore Features</a>
+        <a href="#projects" class="btn btn-blue">View Projects ↓</a>
+        <a href="#contact" class="btn btn-outline">Get in Touch</a>
       </div>
-
-      <!-- App UI mockup -->
-      <div class="hero-mockup">
-        <div class="app-card">
-          <div class="app-card-header">
-            <div class="app-card-header-left">
-              <div class="app-card-subtitle">Dhaka University</div>
-              <div class="app-card-title">Lal Bus</div>
-              <div class="app-card-tagline">Real-time bus tracking</div>
-            </div>
-            <div class="app-badge">
-              <span class="active-dot"></span>
-              3 active buses
-            </div>
-          </div>
-          <div class="app-card-body">
-            <div class="app-grid">
-              <div class="app-grid-item"><div class="app-grid-icon">🗺️</div><div class="app-grid-label">Live map</div></div>
-              <div class="app-grid-item"><div class="app-grid-icon">🕐</div><div class="app-grid-label">Schedule</div></div>
-              <div class="app-grid-item"><div class="app-grid-icon">📢</div><div class="app-grid-label">Notices</div></div>
-              <div class="app-grid-item"><div class="app-grid-icon">📍</div><div class="app-grid-label">Stops</div></div>
-            </div>
-            <div class="app-activity">
-              <div class="app-activity-title">Recent activity</div>
-              <div class="app-activity-row">
-                <span class="active-dot-sm"></span>
-                <div style="flex:1"><div class="app-activity-name">Kinchit</div><div class="app-activity-bn">কিঞ্চিত</div></div>
-                <div class="app-activity-time">2 users · just now</div>
-              </div>
-              <div class="app-activity-row">
-                <span class="active-dot-sm"></span>
-                <div style="flex:1"><div class="app-activity-name">Taranga</div><div class="app-activity-bn">তরঙ্গ</div></div>
-                <div class="app-activity-time">1 user · 4 min ago</div>
-              </div>
-              <div class="app-activity-row">
-                <span class="active-dot-sm"></span>
-                <div style="flex:1"><div class="app-activity-name">Shrabon</div><div class="app-activity-bn">শ্রাবণ</div></div>
-                <div class="app-activity-time">3 users · 9 min ago</div>
-              </div>
-            </div>
-          </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">5<span>+</span></div>
+          <div class="stat-label">Projects on GitHub</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">4<span>+</span></div>
+          <div class="stat-label">Years building</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Ideas in queue</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="features">
+<section id="about">
   <div class="container">
-    <div class="section-eyebrow">Features</div>
-    <h2 class="section-title">Everything you need</h2>
-    <p class="section-desc">Built for DU students, by a DU student. Simple, fast, and useful.</p>
-    <div class="features-grid reveal">
-      <div class="feature-card">
-        <div class="feature-icon-wrap">🗺️</div>
-        <div class="feature-name">Live GPS Tracking</div>
-        <div class="feature-desc">See where buses are right now on a live map. Location data shared by riders on the bus.</div>
+    <div class="section-eyebrow">About</div>
+    <h2 class="section-title">Who I am</h2>
+    <div class="about-grid reveal">
+      <div>
+        <div class="about-text">
+          <p>I'm a <strong>BBA student at the University of Dhaka</strong> based in Gazipur, Dhaka. I have a deep interest in technology and building practical things that actually work.</p>
+          <p>My focus is on <strong>automation, AI agents, and bots</strong>. I enjoy working with Android, Flutter, Java, and Linux — and I'm always up for collaboration on interesting projects.</p>
+          <p>Outside of tech, I manage a <strong>poultry farming operation</strong> and contribute to my family business.</p>
+        </div>
+        <div class="skills-wrap" style="margin-top:28px;">
+          <span class="skill-chip strong">Flutter</span>
+          <span class="skill-chip strong">Java</span>
+          <span class="skill-chip strong">Android</span>
+          <span class="skill-chip strong">Linux</span>
+          <span class="skill-chip">Firebase</span>
+          <span class="skill-chip">Automation</span>
+          <span class="skill-chip">AI Agents</span>
+          <span class="skill-chip">Bots</span>
+          <span class="skill-chip">Git</span>
+        </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">👨‍✈️</div>
-        <div class="feature-name">Driver Mode</div>
-        <div class="feature-desc">A simplified interface for drivers with distraction-free access to maps and schedules.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">🕐</div>
-        <div class="feature-name">Full Schedule</div>
-        <div class="feature-desc">Complete timetables for all 17+ DU bus routes with stop-wise arrival estimates.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">📍</div>
-        <div class="feature-name">Stop Maps</div>
-        <div class="feature-desc">Interactive maps showing every stop for every route. Know exactly where to wait.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">📢</div>
-        <div class="feature-name">Notices</div>
-        <div class="feature-desc">General and bus-specific announcements. Admins can post, students stay informed.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">🔐</div>
-        <div class="feature-name">DU Auth</div>
-        <div class="feature-desc">Login with your @du.ac.bd Google account or traditional email/password.</div>
+      <div class="about-facts">
+        <div class="fact">
+          <div class="fact-label">Location</div>
+          <div class="fact-value">Gazipur, Dhaka, Bangladesh</div>
+        </div>
+        <div class="fact">
+          <div class="fact-label">Education</div>
+          <div class="fact-value">BBA — University of Dhaka</div>
+        </div>
+        <div class="fact">
+          <div class="fact-label">Focus</div>
+          <div class="fact-value">Automation · AI Agents · Bots</div>
+        </div>
+        <div class="fact">
+          <div class="fact-label">Stack</div>
+          <div class="fact-value">Flutter · Java · Linux · Android</div>
+        </div>
+        <div class="fact">
+          <div class="fact-label">Status</div>
+          <div class="fact-value" style="color:var(--green);">Open to collaboration ✓</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="screens">
+<section id="projects">
   <div class="container">
-    <div class="section-eyebrow">Screens</div>
-    <h2 class="section-title">What's inside the app</h2>
-    <p class="section-desc">Each screen is focused on one job — no bloat.</p>
-    <div class="screens-grid reveal">
-      <div class="screen-card"><div class="screen-icon">🏠</div><div class="screen-name">Home</div><div class="screen-desc">Active buses & quick actions</div></div>
-      <div class="screen-card"><div class="screen-icon">🗺️</div><div class="screen-name">Live Map</div><div class="screen-desc">Real-time bus positions</div></div>
-      <div class="screen-card"><div class="screen-icon">📅</div><div class="screen-name">Schedule</div><div class="screen-desc">Timetables for all routes</div></div>
-      <div class="screen-card"><div class="screen-icon">📍</div><div class="screen-name">Stops</div><div class="screen-desc">Stop map per route</div></div>
-      <div class="screen-card"><div class="screen-icon">📢</div><div class="screen-name">Notices</div><div class="screen-desc">Admin announcements</div></div>
-      <div class="screen-card"><div class="screen-icon">⚙️</div><div class="screen-name">Settings</div><div class="screen-desc">Account & preferences</div></div>
-      <div class="screen-card"><div class="screen-icon">🔑</div><div class="screen-name">Login</div><div class="screen-desc">DU email or password</div></div>
-      <div class="screen-card"><div class="screen-icon">🛠️</div><div class="screen-name">Admin</div><div class="screen-desc">Post & manage notices</div></div>
+    <div class="section-eyebrow">Projects</div>
+    <h2 class="section-title">What I've built</h2>
+    <p class="section-desc">Open source projects on GitHub — all built solo.</p>
+    <div class="projects-list reveal">
+
+      <a href="https://github.com/MasadMoral/lal-bus" target="_blank" rel="noopener" class="project-item">
+        <div>
+          <div class="project-num">01 — github.com/MasadMoral/lal-bus</div>
+          <div class="project-name">Lalbus</div>
+          <div class="project-desc">Real-time bus tracking app for Dhaka University students. Live GPS, full schedules for 17+ routes, stop maps, notices, and DU email authentication.</div>
+        </div>
+        <div class="project-tags">
+          <span class="tag lang">Dart</span>
+          <span class="tag">Flutter</span>
+          <span class="tag">Firebase</span>
+          <span class="tag">OpenStreetMap</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/MasadMoral/rtx-student-releases" target="_blank" rel="noopener" class="project-item">
+        <div>
+          <div class="project-num">02 — github.com/MasadMoral/rtx-student-releases</div>
+          <div class="project-name">RTX Student</div>
+          <div class="project-desc">Student tuition helper app. Tracks sessions, schedules, and progress. Dark AMOLED design with Flutter.</div>
+        </div>
+        <div class="project-tags">
+          <span class="tag lang">Dart</span>
+          <span class="tag">Flutter</span>
+          <span class="tag">Android</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/MasadMoral/HscResult" target="_blank" rel="noopener" class="project-item">
+        <div>
+          <div class="project-num">03 — github.com/MasadMoral/HscResult</div>
+          <div class="project-name">HSC Result</div>
+          <div class="project-desc">Android app that fetches and displays HSC exam results. Built in Java as a learning project.</div>
+        </div>
+        <div class="project-tags">
+          <span class="tag lang">Java</span>
+          <span class="tag">Android</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/MasadMoral/mi_auto_reboot" target="_blank" rel="noopener" class="project-item">
+        <div>
+          <div class="project-num">04 — github.com/MasadMoral/mi_auto_reboot</div>
+          <div class="project-name">Mi Auto Reboot</div>
+          <div class="project-desc">Python module that triggers instant reboot on Mi routers. Simple automation tool for network management.</div>
+        </div>
+        <div class="project-tags">
+          <span class="tag lang">Python</span>
+          <span class="tag">Automation</span>
+          <span class="tag">Networking</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/MasadMoral/sscmcqapk" target="_blank" rel="noopener" class="project-item">
+        <div>
+          <div class="project-num">05 — github.com/MasadMoral/sscmcqapk</div>
+          <div class="project-name">SSC MCQ</div>
+          <div class="project-desc">A small Java app built while tutoring — tested MCQ-based practice for SSC students.</div>
+        </div>
+        <div class="project-tags">
+          <span class="tag lang">Java</span>
+          <span class="tag">Android</span>
+        </div>
+      </a>
+
     </div>
   </div>
 </section>
 
-<section id="routes">
+<section id="contact">
   <div class="container">
-    <div class="section-eyebrow">Routes</div>
-    <h2 class="section-title">17+ DU bus routes</h2>
-    <p class="section-desc">From Kinchit to Shitalakhya — all routes covered.</p>
-    <div class="routes-wrap reveal">
-      <span class="route-chip">Kinchit</span>
-      <span class="route-chip">Choitaly</span>
-      <span class="route-chip">Shrabon</span>
-      <span class="route-chip">Taranga</span>
-      <span class="route-chip">Basanta</span>
-      <span class="route-chip">Boishakhi</span>
-      <span class="route-chip">Khonika</span>
-      <span class="route-chip">Hemonto</span>
-      <span class="route-chip">Ullash</span>
-      <span class="route-chip">Falguni</span>
-      <span class="route-chip">Isha Kha</span>
-      <span class="route-chip">Maitree</span>
-      <span class="route-chip">Wari-Bateshwar</span>
-      <span class="route-chip">Idrakpur</span>
-      <span class="route-chip">Bikrampur</span>
-      <span class="route-chip">Ananda</span>
-      <span class="route-chip">Shitalakhya</span>
-    </div>
-  </div>
-</section>
-
-<section id="tech">
-  <div class="container">
-    <div class="section-eyebrow">Tech Stack</div>
-    <h2 class="section-title">Built with</h2>
-    <p class="section-desc">Lightweight, fast, and open source.</p>
-    <div class="tech-grid reveal">
-      <div class="tech-card"><div class="tech-icon">🐦</div><div><div class="tech-name">Flutter ^3.13</div><div class="tech-desc">Android app built in Dart</div></div></div>
-      <div class="tech-card"><div class="tech-icon">🔥</div><div><div class="tech-name">Firebase</div><div class="tech-desc">Firestore + Realtime Database + Auth</div></div></div>
-      <div class="tech-card"><div class="tech-icon">🗺️</div><div><div class="tech-name">OpenStreetMap</div><div class="tech-desc">flutter_map — open source, no cost</div></div></div>
-      <div class="tech-card"><div class="tech-icon">📡</div><div><div class="tech-name">Geolocator</div><div class="tech-desc">GPS with 15m distance filtering</div></div></div>
-    </div>
-  </div>
-</section>
-
-<div class="cta-section">
-  <div class="container">
-    <div class="cta-inner">
-      <h2 class="cta-title">Built for <span>DU</span> students.</h2>
-      <p class="cta-desc">Open source. MIT licensed. Free to use and modify.</p>
-      <div class="cta-btns">
-        <a href="https://github.com/MasadMoral/lal-bus" target="_blank" class="btn btn-red">GitHub Repository ↗</a>
-        <a href="https://github.com/MasadMoral/lal-bus/releases" target="_blank" class="btn btn-outline">Releases</a>
+    <div class="section-eyebrow">Contact</div>
+    <div class="contact-grid reveal">
+      <div>
+        <h2 class="contact-heading">Let's build<br><span>something</span><br>together.</h2>
+        <p class="contact-sub">Open to collaboration on interesting projects — automation, AI agents, Android apps, or anything useful.</p>
+      </div>
+      <div class="contact-links">
+        </a>
+        <a href="https://github.com/MasadMoral" target="_blank" rel="noopener" class="contact-link">
+          <span class="contact-link-icon">GitHub</span>
+          github.com/MasadMoral
+        </a>
+        <a href="https://t.me/MasadMoral" target="_blank" rel="noopener" class="contact-link">
+          <span class="contact-link-icon">Telegram</span>
+          t.me/MasadMoral
+        </a>
+        <a href="https://facebook.com/MasadMoral" target="_blank" rel="noopener" class="contact-link">
+          <span class="contact-link-icon">Facebook</span>
+          facebook.com/MasadMoral
+        </a>
+        <a href="https://instagram.com/masad_moral" target="_blank" rel="noopener" class="contact-link">
+          <span class="contact-link-icon">Instagram</span>
+          masad_moral
+        </a>
+        <a id="mailcard" href="#" class="contact-link">
+          <span class="contact-link-icon">Email</span>
+          <span id="mailtext">masadmoral at hotmail.com</span>
+        </a>
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <footer>
   <div class="container">
-    <div class="footer-copy">© 2026 <span>Lal Bus</span> — MIT License</div>
-    <div class="footer-copy"><span>lalbus.pro.bd</span></div>
+    <div class="footer-copy">© 2026 <span>Masad Moral</span></div>
+    <div class="footer-copy"><span>masad.ami.bd</span></div>
   </div>
 </footer>
 
 <script>
-  window.addEventListener('scroll', () => {
-    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
-  });
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
-</script>
-</body>
-</html>
+  const em = 'masadmoral' + '\x40' + 'hotmail.com';
+  const mc = document.getElementById('mailcard');
+  if(mc){ mc.href = 'mailto:' + em; document.getElementById('mailtext').textContent = em; }
